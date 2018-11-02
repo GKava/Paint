@@ -9,7 +9,7 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 
-public class DrawView extends View implements View.OnTouchListener {
+public class DrawView extends View {
     Paint paint = new Paint();
     Paint paintblack = new Paint();
     Paint paintHand = new Paint();
@@ -43,7 +43,6 @@ public class DrawView extends View implements View.OnTouchListener {
     public void onDraw(Canvas canvas) {
          intX = (int) x;
          intY = (int) y;
-            canvas.drawPath(path, paint);
 
          if (x !=0) {
              canvas.drawRect(intX, intY, intX + 100, intY + 100, paintHand);
@@ -64,23 +63,23 @@ public class DrawView extends View implements View.OnTouchListener {
     }
 
     @Override
-    public boolean onTouch(View view, MotionEvent event) {
-        x = event.getX();
-        y = event.getY();
-
-
+    public boolean onTouchEvent(MotionEvent event) {
         switch (event.getAction()) {
-            case MotionEvent.ACTION_DOWN: // нажатие
-                path.moveTo(event.getX(), event.getY());
-                break;
-            case MotionEvent.ACTION_MOVE: // движение
-                path.lineTo(event.getX(), event.getY());
-                break;
+//            case MotionEvent.ACTION_DOWN: // нажатие
+//
+//                break;
+//            case MotionEvent.ACTION_MOVE: // движение
+//
+//                break;
             case MotionEvent.ACTION_UP: // отпускание
+                x = event.getX();
+                y = event.getY();
+                invalidate();
                 break;
 
         }
-        invalidate();
+
         return true;
-    }
+     }
+
 }
