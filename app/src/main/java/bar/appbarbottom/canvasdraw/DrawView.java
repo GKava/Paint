@@ -13,15 +13,17 @@ public class DrawView extends View {
     Paint paint = new Paint();
     Paint paintblack = new Paint();
     Paint paintHand = new Paint();
-    Path path = new Path();
     float x;
     float y;
     int intX;
     int intY;
+    int modX;
+    int modY;
+
     private void init() {
         paint.setColor(Color.DKGRAY);
         paintblack.setColor(Color.BLACK);
-        paintHand.setColor(Color.GREEN);
+        paintHand.setColor(Color.BLACK);
     }
 
     public DrawView(Context context) {
@@ -41,8 +43,16 @@ public class DrawView extends View {
 
     @Override
     public void onDraw(Canvas canvas) {
+        drawGrid(canvas);
+
+        int width = canvas.getWidth();
+        int height = canvas.getHeight();
          intX = (int) x;
          intY = (int) y;
+         modX = intX % 100;
+         modY = intY % 100;
+         intX = intX - modX;
+         intY = intY - modY;
 
          if (x !=0) {
              canvas.drawRect(intX, intY, intX + 100, intY + 100, paintHand);
@@ -61,16 +71,17 @@ public class DrawView extends View {
         }
 
     }
+    public void drawGrid(Canvas canvas){
+                for (int s=100;s<500;s=s+100) {
+            for (int cub = 0; cub < 10000; cub = cub + 100) {
+                canvas.drawRect(0 + cub, 100 + cub-s, 100 + cub, 200 + cub+s, paint);
+            }
+        }
+    }
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         switch (event.getAction()) {
-//            case MotionEvent.ACTION_DOWN: // нажатие
-//
-//                break;
-//            case MotionEvent.ACTION_MOVE: // движение
-//
-//                break;
             case MotionEvent.ACTION_UP: // отпускание
                 x = event.getX();
                 y = event.getY();
@@ -78,7 +89,6 @@ public class DrawView extends View {
                 break;
 
         }
-
         return true;
      }
 
