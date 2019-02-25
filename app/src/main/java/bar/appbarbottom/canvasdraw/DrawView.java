@@ -32,7 +32,13 @@ public class DrawView extends View {
     protected Rect mContentRect = new Rect();
     int sizePixWidth,sizePixHeight,sizePixAll;
 
-    int[] completedPixels ={0,1,0,0,1,0,0,1}; //10 пикселей
+    int[] completedPixels1 ={1,1,1,0,0,1};
+    int[] completedPixels2 ={0,1,1,1,0,0};
+    int[] completedPixels3 ={0,0,1,1,1,0};
+    int[] completedPixels4 ={0,1,1,1,0,0};
+    int[] completedPixels5 ={1,1,1,0,0,1};
+    int num;
+
 
     private void init() {
         paint.setColor(Color.DKGRAY);
@@ -104,9 +110,8 @@ public class DrawView extends View {
 //        canvas.translate();
 //        canvas.drawBitmap(bitmap, matrix, paint);
 //        canvas.drawBitmap(bitmap, rectSrc, rectDst, paint);
-
      //    drawCircle(canvas);
-         massivDraw(canvas);
+
          intX = (int) x;
          intY = (int) y;
          modX = intX % 100;
@@ -124,7 +129,18 @@ public class DrawView extends View {
             canvas.drawLine(100+a, 0, 100+a, 2000, paintblack);   // вертикальные линии
         }
 
+
+        massivDraw(canvas,completedPixels1,1);
+        massivDraw(canvas,completedPixels2,2);
+        massivDraw(canvas,completedPixels3,3);
+        massivDraw(canvas,completedPixels4,4);
+        massivDraw(canvas,completedPixels5,5);
+
     }
+
+
+
+
     // черная хрень
     public void drawCircle(Canvas canvas){
         mContentRect.height();
@@ -145,7 +161,7 @@ public class DrawView extends View {
                 invalidate();
 
 
-                completedPixels[1]=1;
+//                completedPixels[1]=1;
                 break;
             case MotionEvent.ACTION_MOVE: // движение
 
@@ -154,22 +170,53 @@ public class DrawView extends View {
         }
         return true;
      }
-//    int[] completedPixels ={0,1,0,0,1,0,0,1}; //10 пикселей
-public void massivDraw(Canvas canvas){
-    int[] completedPixels ={0,1,0,0,1,0,0,1};
 
-    for (int i = 0; i < completedPixels.length; i++){
-        if (completedPixels[i]==1){
-            int sto=i*100;
-            canvas.drawRect(0+sto, 0, 0 + sto+100, 100 , paintRed);
-        }
-        if (completedPixels[i]==0){
-            int sto=i*100;
-            canvas.drawRect(0+sto, 200, 0 + sto+100, 300 , paintGreen);
-        }
 
+
+//    int[] completedPixels1 ={1,1,1,0,0,1};
+//    int[] completedPixels2 ={0,1,1,1,0,0};
+//    int[] completedPixels3 ={0,0,1,1,1,0};
+//    int[] completedPixels4 ={0,1,1,1,0,0};
+//    int[] completedPixels5 ={1,1,1,0,0,1};
+
+    public void massivDraw(Canvas canvas, int[] pix,int lvl){
+        num=0;
+        for (int x=0; x<pix.length;x++){
+            if (pix[x]==1){
+                num++;
+            }
+        }
+        for (int i = 0; i < pix.length; i++){
+            if (pix[i]==1){
+                int sto=i*100; //сдвиг вправо
+                lvl=100*lvl;
+
+
+
+
+                if (pix[i]==1){
+             canvas.drawRect(0+sto, lvl, 0 + sto+100*num, lvl+100 , paintRed); //первую единицу из массива печатает
+
+
+
+
+//                canvas.drawRect(sto, lvl, 0 + sto+100+(num*10)/5, lvl+100 , paintRed);
+//                canvas.drawRect(sto, lvl, 0 + sto+100+(num*10)/5, lvl+100 , paintRed);
+            }
+
+
+
+
+//            if (pix[i]==1){
+//                int sto=i*100;
+//                canvas.drawRect(0+sto, 0, 0 + sto+100, 100 , paintGreen);
+//            }
+//            if (pix[i]==0){
+//                int sto=i*100;
+//                canvas.drawRect(0+sto, 200, 0 + sto+100, 300 , paintGreen);
+//            }
+        }
     }
-}
-
+    }
 
 }
