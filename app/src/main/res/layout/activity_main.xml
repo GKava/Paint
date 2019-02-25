@@ -7,7 +7,6 @@
 
     <bar.appbarbottom.canvasdraw.DrawView
         android:background="#00000000"
-        android:tag="canvasDrow"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 
