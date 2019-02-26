@@ -27,17 +27,22 @@ public class DrawView extends View {
     float x,y;
 
     int intX,intY,modX,modY;
-
+    int coordinataPixY,coordinataPixX;
     Bitmap bitmap;
     protected Rect mContentRect = new Rect();
     int sizePixWidth,sizePixHeight,sizePixAll;
 
-    int[] completedPixels1 ={1,1,1,0,0,1};
-    int[] completedPixels2 ={0,1,1,1,0,0};
-    int[] completedPixels3 ={0,0,1,1,1,0};
-    int[] completedPixels4 ={0,1,1,1,0,0};
-    int[] completedPixels5 ={1,1,1,0,0,1};
+
+    int[] nullOne ={1,0,1,0,0,1};
+    int[] heart1 ={0,0,1,1,0,1,1,0,0};
+    int[] heart2 ={0,1,1,1,1,1,1,1,0};
+    int[] heart3 ={0,1,1,1,1,1,1,1,0};
+    int[] heart4 ={0,0,1,1,1,1,1,0,0};
+    int[] heart5 ={0,0,0,1,1,1,0,0,0};
+    int[] heart6 ={0,0,0,0,1,0,0,0,0};
     int num;
+
+    int[][] pixel = new int[2][7]; // колонки  & строки
 
 
     private void init() {
@@ -69,7 +74,7 @@ public class DrawView extends View {
                         bitmap.getRowBytes(),
                         bitmap.getConfig());
         Log.d("log", info);
-//
+
 //        matrix = new Matrix();
 //        matrix.postRotate(45);
 //        matrix.postScale(2, 3);
@@ -97,15 +102,16 @@ public class DrawView extends View {
         sizePixWidth = mContentRect.width()/100;
         sizePixHeight = mContentRect.height()/100;
         sizePixAll =sizePixWidth*sizePixHeight;
-       String s = String.valueOf(sizePixAll);
-        Log.d(" SizePixWidth:  ", s);
+        String s = String.valueOf(sizePixAll);
+        Log.d(" Размерность сетки:  ", s);
+        pixel = new int[sizePixWidth + 1][sizePixHeight + 1];
     }
 
     @Override
     public void onDraw(Canvas canvas) {
       //  paint = new Paint(Paint.ANTI_ALIAS_FLAG);
         canvas.drawARGB(80, 102, 204, 255);
-        canvas.drawBitmap(bitmap, 50, 50, paint);
+     //   canvas.drawBitmap(bitmap, 50, 50, paint); // рисуется битмап картинка
         canvas.scale(1,1);
 //        canvas.translate();
 //        canvas.drawBitmap(bitmap, matrix, paint);
@@ -119,37 +125,31 @@ public class DrawView extends View {
          intX = intX - modX;
          intY = intY - modY;
 
-         if (x !=0) {
-             canvas.drawRect(intX, intY, intX + 100, intY + 100, paintRed);
+         for (int x = 0; x < sizePixWidth; x++) {
+             for (int y = 0; y < sizePixHeight; y++) {
+                 if (pixel[x][y] == 1) {
+                     canvas.drawRect(x * 100, y * 100, x * 100 + 100, y * 100 + 100, paintRed);
+                 }
+             }
          }
 
-//сетка
+//         if (x !=0) {
+//             canvas.drawRect(intX, intY, intX + 100, intY + 100, paintRed);
+//         }
+
+        //Рисуется сетка
         for (int a=0;a<10000;a=a+100) {
             canvas.drawLine(0, 100+a, 2000, 100+a, paintblack); // горизонтальные линии
             canvas.drawLine(100+a, 0, 100+a, 2000, paintblack);   // вертикальные линии
         }
 
-
-        massivDraw(canvas,completedPixels1,1);
-        massivDraw(canvas,completedPixels2,2);
-        massivDraw(canvas,completedPixels3,3);
-        massivDraw(canvas,completedPixels4,4);
-        massivDraw(canvas,completedPixels5,5);
-
-    }
-
-
-
-
-    // черная хрень
-    public void drawCircle(Canvas canvas){
-        mContentRect.height();
-        mContentRect.width();
-        for (int aw=0;aw<1000;aw=aw+100) {
-            for (int ah = 0; ah < 1000; ah = ah + 100) {
-                canvas.drawCircle(50+aw, 50 + ah, 40, paintRed);
-            }
-        }
+//        drawHeart(canvas,heart1,2);
+//        drawHeart(canvas,heart2,3);
+//        drawHeart(canvas,heart3,4);
+//        drawHeart(canvas,heart4,5);
+//        drawHeart(canvas,heart5,6);
+//        drawHeart(canvas,heart6,7);
+//          drawDvumerMassiv(canvas,pixel);
     }
 
     @Override
@@ -158,10 +158,23 @@ public class DrawView extends View {
             case MotionEvent.ACTION_UP: // отпускание
                 x = event.getX();
                 y = event.getY();
+                intX = (int) x;
+                intY = (int) y;
+                coordinataPixY = intY/100;
+                coordinataPixX = intX/100;
+
+                if (pixel[coordinataPixX][coordinataPixY] == 0) {
+                    pixel[coordinataPixX][coordinataPixY] = 1;
+                } else {
+                    pixel[coordinataPixX][coordinataPixY] = 0;
+                }
+
+                String infY = String.valueOf(coordinataPixY);
+                String infX = String.valueOf(coordinataPixX);
+                Log.d(" Pixel index X: ", infX+" Y: "+ infY);
+
+
                 invalidate();
-
-
-//                completedPixels[1]=1;
                 break;
             case MotionEvent.ACTION_MOVE: // движение
 
@@ -169,54 +182,58 @@ public class DrawView extends View {
 
         }
         return true;
-     }
+    }
 
+    //рисует квадрат по двумерному массиву
+//public void drawDvumerMassiv (Canvas canvas, int[][] pixel){
+//
+//    for (int i = 0; i < pixel.length; i++){
+//        int lvl = i*100;
+//        for (int j = 0; j < pixel[0].length; j++){
+//            int sto=j*100;
+//
+//            canvas.drawRect(0+lvl, sto, 0 + lvl+100, 100+sto , paintRed);
+//          //  canvas.drawRect(0+sto, 0, 0 + sto+100, 100 , paintGreen); // закрашивает единицы
+//        }
+//    }
+//}
 
-
-//    int[] completedPixels1 ={1,1,1,0,0,1};
-//    int[] completedPixels2 ={0,1,1,1,0,0};
-//    int[] completedPixels3 ={0,0,1,1,1,0};
-//    int[] completedPixels4 ={0,1,1,1,0,0};
-//    int[] completedPixels5 ={1,1,1,0,0,1};
-
-    public void massivDraw(Canvas canvas, int[] pix,int lvl){
-        num=0;
-        for (int x=0; x<pix.length;x++){
-            if (pix[x]==1){
-                num++;
-            }
-        }
-        for (int i = 0; i < pix.length; i++){
-            if (pix[i]==1){
-                int sto=i*100; //сдвиг вправо
-                lvl=100*lvl;
-
-
-
-
-                if (pix[i]==1){
-             canvas.drawRect(0+sto, lvl, 0 + sto+100*num, lvl+100 , paintRed); //первую единицу из массива печатает
-
-
-
-
-//                canvas.drawRect(sto, lvl, 0 + sto+100+(num*10)/5, lvl+100 , paintRed);
-//                canvas.drawRect(sto, lvl, 0 + sto+100+(num*10)/5, lvl+100 , paintRed);
-            }
-
-
-
-
+//    public void massivDrawNullOne(Canvas canvas, int[] pix){  //     int[] nullOne ={1,0,1,0,0,1};
+//        for (int i = 0; i < pix.length; i++){
+//
 //            if (pix[i]==1){
 //                int sto=i*100;
-//                canvas.drawRect(0+sto, 0, 0 + sto+100, 100 , paintGreen);
+//                canvas.drawRect(0+sto, 0, 0 + sto+100, 100 , paintGreen); // закрашивает единицы
+//
 //            }
 //            if (pix[i]==0){
 //                int sto=i*100;
-//                canvas.drawRect(0+sto, 200, 0 + sto+100, 300 , paintGreen);
+//                canvas.drawRect(0+sto, 200, 0 + sto+100, 300 , paintGreen); // закрашивает нули
 //            }
-        }
-    }
-    }
-
+//        }
+//    }
+//
+////сердце
+//    public void drawHeart (Canvas canvas, int[] pix, int lvl){
+//        lvl = 100 * lvl;
+//        for (int i = 0; i < pix.length; i++){
+//            if (pix[i]==1){
+//                int sto=i*100;
+//               // lvl = 100 * lvl;
+//                canvas.drawRect(0+sto, lvl,  sto+100, 100+lvl , paintRed); // закрашивает единицы
+//            }
+//        }
+//    }
+//// круглешки
+//    public void drawCircle(Canvas canvas){
+//        mContentRect.height();
+//        mContentRect.width();
+//        for (int aw=0;aw<1000;aw=aw+100) {
+//            for (int ah = 0; ah < 1000; ah = ah + 100) {
+//                canvas.drawCircle(50+aw, 50 + ah, 40, paintRed);
+//            }
+//        }
+//    }
 }
+
+
